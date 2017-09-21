@@ -51,6 +51,7 @@ export class AppComponent {
 
     logOut(): void {
         this.authService.logout();
+        this.authService.redirectUrl = null;
         console.log('Log out');
         this.router.navigateByUrl('/welcome');
     }

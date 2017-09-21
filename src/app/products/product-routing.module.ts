@@ -6,12 +6,16 @@ import { ProductDetailComponent } from './product-detail.component';
 import { ProductEditComponent } from './product-edit.component';
 import { ProductEditInfoComponent } from './product-edit-info.component';
 import { ProductEditTagsComponent } from './product-edit-tags.component';
-
 import { ProductResolver } from './product-resolver.service';
+import { ProductEditGuard } from './product-guard.service';
+
+import { AuthGuard } from '../user/auth-guard.service';
+import { ModifyDataGuard } from '../user/modify-data-guard.service';
 
 const ROUTES = [
   {
     path: 'products',
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -26,6 +30,8 @@ const ROUTES = [
         path: ':id/edit',
         component: ProductEditComponent,
         resolve: { product: ProductResolver },
+        canActivateChild: [ModifyDataGuard],
+        canDeactivate: [ProductEditGuard],
         children: [
           {
             path: '',
@@ -54,7 +60,8 @@ const ROUTES = [
     RouterModule
   ],
   providers: [
-    ProductResolver
+    ProductResolver,
+    ProductEditGuard
   ]
 })
 export class ProductRoutingModule { }
