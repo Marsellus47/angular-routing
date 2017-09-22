@@ -9,44 +9,37 @@ import { ProductEditTagsComponent } from './product-edit-tags.component';
 import { ProductResolver } from './product-resolver.service';
 import { ProductEditGuard } from './product-guard.service';
 
-import { AuthGuard } from '../user/auth-guard.service';
 import { ModifyDataGuard } from '../user/modify-data-guard.service';
 
 const ROUTES = [
   {
-    path: 'products',
-    canActivate: [AuthGuard],
+    path: '',
+    component: ProductListComponent,
+  },
+  {
+    path: ':id',
+    component: ProductDetailComponent,
+    resolve: { product: ProductResolver }
+  },
+  {
+    path: ':id/edit',
+    component: ProductEditComponent,
+    resolve: { product: ProductResolver },
+    canActivateChild: [ModifyDataGuard],
+    canDeactivate: [ProductEditGuard],
     children: [
       {
         path: '',
-        component: ProductListComponent,
+        redirectTo: 'info',
+        pathMatch: 'full'
       },
       {
-        path: ':id',
-        component: ProductDetailComponent,
-        resolve: { product: ProductResolver }
+        path: 'info',
+        component: ProductEditInfoComponent
       },
       {
-        path: ':id/edit',
-        component: ProductEditComponent,
-        resolve: { product: ProductResolver },
-        canActivateChild: [ModifyDataGuard],
-        canDeactivate: [ProductEditGuard],
-        children: [
-          {
-            path: '',
-            redirectTo: 'info',
-            pathMatch: 'full'
-          },
-          {
-            path: 'info',
-            component: ProductEditInfoComponent
-          },
-          {
-            path: 'tags',
-            component: ProductEditTagsComponent
-          }
-        ]
+        path: 'tags',
+        component: ProductEditTagsComponent
       }
     ]
   }
